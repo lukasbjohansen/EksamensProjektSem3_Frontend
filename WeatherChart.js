@@ -25,6 +25,10 @@ const WeatherChart = {
         <label><input type="checkbox" v-model="showTemp"> Temperatur (°C)</label>
         <label><input type="checkbox" v-model="showHum"> Luftfugtighed (%)</label>
       </div>
+      <div class="axis-headings">
+        <span class="y-axis-heading y-temp">Temperatur (°C)</span>
+        <span class="y-axis-heading y-hum">Luftfugtighed (%)</span>
+      </div>
       <canvas ref="canvas"></canvas>
     </div>
   `,
@@ -54,8 +58,9 @@ const WeatherChart = {
         responsive: true,
         plugins: { legend: { display: false } },
         scales: {
-          yTemp: { position: "left", min: -5, max: 40 },
-          yHum: { position: "right", min: 0, max: 100, grid: { drawOnChartArea: false } }
+          yTemp: { position: "left", min: -10, max: 50, ticks:{stepSize: 5, callback: (value) => value <= 45 && value >= -5 ? value : ""} },
+          yHum: { position: "right", min: -10, max: 110, ticks:{stepSize: 5, callback: (value) => value <= 100 && value >= 0 ? value : ""} },
+          
         }
       }
     });
