@@ -1,86 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="da">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Temperatur og Luftfugtighed</title>
-    <script src="https://unpkg.com/vue@3.0.11/dist/vue.global.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 30px;
-            color: #222;
-        }
-
-        .chart-wrapper {
-            max-width: 850px;
-            margin: 0 auto;
-        }
-
-        .controls {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-            margin-bottom: 12px;
-            font-size: 14px;
-        }
-
-        .controls label {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-        }
-
-        .dot-temp {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: #d96b27;
-            display: inline-block;
-        }
-
-        .dot-hum {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: #2563eb;
-            display: inline-block;
-        }
-
-        .caption {
-            margin-top: 10px;
-            font-size: 12px;
-            color: #777;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Temperatur og Luftfugtighed</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-
 <body>
-    <div class="chart-wrapper" id="app">
-        <div class="controls">
-            <label>
-                <input type="checkbox" id="toggleTemp" checked />
-                <span class="dot-temp"></span>
-                <span>Temperatur (°C)</span>
-            </label>
+  <div id="app">
+    <weather-chart
+      :temp-data="tempData"
+      :humidity-data="humidityData"
+    ></weather-chart>
+  </div>
 
-            <label>
-                <input type="checkbox" id="toggleHum" checked />
-                <span class="dot-hum"></span>
-                <span>Luftfugtighed (%)</span>
-            </label>
-        </div>
-
-        <canvas id="weatherChart" height="110"></canvas>
-
-        <p class="caption">
-            Eksempeldata over 24 timer. Slå linjerne til og fra ovenfor.
-        </p>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="index.js"></script>
+  <script src="WeatherChart.js"></script>
+  <script src="app.js"></script>
 </body>
-
 </html>
