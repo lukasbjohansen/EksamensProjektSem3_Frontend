@@ -1,86 +1,99 @@
-const WeatherChart = {
-  props: {
-    labels: {
-      type: Array,
-      default: () => ["00", "04", "08", "12", "16", "20", "24"]
-    },
-    tempData: {
-      type: Array,
-      required: true
-    },
-    humidityData: {
-      type: Array,
-      required: true
-    }
-  },
+const baseUri = "http://localhost:5203/api/Measurements";
+
+Vue.createApp({
+  components: { WeatherChart },
   data() {
     return {
-      showTemp: true,
-      showHum: true,
-      chart: null
+      measurements: [],
+      latestMeasurement: null,
+      error: null,
+      polling: null
     };
   },
-  template: `
-    <div class="weather-chart">
-      <div class="controls">
-        <label><input type="checkbox" v-model="showTemp"> Temperatur (°C)</label>
-        <label><input type="checkbox" v-model="showHum"> Luftfugtighed (%)</label>
-      </div>
-      <canvas ref="canvas"></canvas>
-    </div>
-  `,
-  mounted() {
-    this.chart = new Chart(this.$refs.canvas, {
-      type: "line",
-      data: {
-        labels: this.labels,
-        datasets: [
-          {
-            label: "Temperatur (°C)",
-            data: this.tempData,
-            yAxisID: "yTemp",
-            borderColor: "#d96b27",
-            hidden: !this.showTemp
-          },
-          {
-            label: "Luftfugtighed (%)",
-            data: this.humidityData,
-            yAxisID: "yHum",
-            borderColor: "#2563eb",
-            hidden: !this.showHum
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        plugins: { legend: { display: false } },
-        scales: {
-          yTemp: { position: "left", min: -5, max: 40 },
-          yHum: { position: "right", min: 0, max: 100, grid: { drawOnChartArea: false } }
-        }
-      }
-    });
+  computed: {
+    sortedMeasurements() {
+      return [...this.measurements].sort((a, b) => a.time - b.time);
+    },
+    chartLabels() {
+      return this.sortedMeasurements.map((m) => this.formatTimeOnly(m.time));
+    },
+    chartTempData() {
+      return this.sortedMeasurements.map((m) => m.temperature);
+    },
+    chartHumidityData() {
+      return this.sortedMeasurements.map((m) => m.humidity);
+    }
   },
-  watch: {
-    showTemp(val) {
-      this.chart.setDatasetVisibility(0, val);
-      this.chart.update();
+  async created() {
+    await this.getLatestMeasurement();
+    this.pollData();
+  },
+  beforeUnmount() {
+    if (this.polling) {
+      clearInterval(this.polling);
+      this.polling = null;
+    }
+  },
+  methods: {
+    async getMeasurements(uri) {
+      try {
+        const response = await axios.get(uri);
+
+        if (response.status === 204 || !response.data) {
+          this.measurements = [];
+        } else {
+          this.measurements = response.data;
+          this.measurements.forEach((measurement) => {
+            measurement.Date = this.formatUnixTime(measurement.time);
+          });
+        }
+
+        this.error = null;
+      } catch (ex) {
+        this.measurements = [];
+        this.error = ex.message;
+      }
     },
-    showHum(val) {
-      this.chart.setDatasetVisibility(1, val);
-      this.chart.update();
+    async getLatestMeasurement() {
+      await this.getMeasurements(baseUri);
+      if (this.measurements.length < 1) {
+        this.latestMeasurement = null;
+        return;
+      }
+      this.latestMeasurement = this.sortedMeasurements[this.sortedMeasurements.length - 1];
     },
-    tempData(val) {
-      this.chart.data.datasets[0].data = val;
-      this.chart.update();
+    pollData() {
+      if (this.polling) return;
+
+      this.polling = setInterval(async () => {
+        await this.getLatestMeasurement();
+      }, 3000);
     },
-    humidityData(val) {
-      this.chart.data.datasets[1].data = val;
-      this.chart.update();
+    toDate(unixTime) {
+      const ms = unixTime < 1e12 ? unixTime * 1000 : unixTime;
+      return new Date(ms);
     },
-    labels(val) {
-      this.chart.data.labels = val;
-      this.chart.update();
+    formatTimeOnly(unixTime) {
+      if (unixTime === null || unixTime === undefined) return "";
+      const date = this.toDate(unixTime);
+      const pad = (n) => String(n).padStart(2, "0");
+      return `${pad(date.getHours())}:${pad(date.getMinutes())}`;
+    },
+    formatUnixTime(unixTime) {
+      if (unixTime === null || unixTime === undefined) return "";
+
+      const date = this.toDate(unixTime);
+      const pad = (n) => String(n).padStart(2, "0");
+
+      const day = pad(date.getDate());
+      const month = pad(date.getMonth() + 1);
+      const year = date.getFullYear();
+
+      const hours = pad(date.getHours());
+      const minutes = pad(date.getMinutes());
+      const seconds = pad(date.getSeconds());
+
+      return `${day}-${month}-${year} | ${hours}:${minutes}:${seconds}`;
     }
   }
-};
+}).mount("#app");
