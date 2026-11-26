@@ -1,15 +1,3 @@
-<<<<<<< Updated upstream
-Vue.createApp({
-    data() {
-        return {
-            
-        }
-    },
-    methods: {
-        
-    }
-}).mount("#app")
-=======
 const baseUri = "http://localhost:5203/api/Measurements";
 
 Vue.createApp({
@@ -109,4 +97,3 @@ Vue.createApp({
     }
   }
 }).mount("#app");
->>>>>>> Stashed changes

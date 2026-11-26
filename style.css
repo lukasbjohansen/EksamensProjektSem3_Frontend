@@ -1,0 +1,10 @@
+.weather-chart {
+  max-width: 850px;
+  margin: 0 auto;
+}
+
+.controls {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 10px;
+}

@@ -16,8 +16,7 @@ const WeatherChart = {
   data() {
     return {
       showTemp: true,
-      showHum: true,
-      chart: null
+      showHum: true
     };
   },
   template: `
@@ -30,21 +29,21 @@ const WeatherChart = {
     </div>
   `,
   mounted() {
-    this.chart = new Chart(this.$refs.canvas, {
+    const chart = new Chart(this.$refs.canvas, {
       type: "line",
       data: {
-        labels: this.labels,
+        labels: [...this.labels],
         datasets: [
           {
             label: "Temperatur (°C)",
-            data: this.tempData,
+            data: [...this.tempData],
             yAxisID: "yTemp",
             borderColor: "#d96b27",
             hidden: !this.showTemp
           },
           {
             label: "Luftfugtighed (%)",
-            data: this.humidityData,
+            data: [...this.humidityData],
             yAxisID: "yHum",
             borderColor: "#2563eb",
             hidden: !this.showHum
@@ -60,27 +59,49 @@ const WeatherChart = {
         }
       }
     });
+
+    this.chart = Vue.markRaw(chart);
+  },
+  beforeUnmount() {
+    if (this.chart) {
+      this.chart.destroy();
+      this.chart = null;
+    }
   },
   watch: {
     showTemp(val) {
+      if (!this.chart) return;
       this.chart.setDatasetVisibility(0, val);
       this.chart.update();
     },
     showHum(val) {
+      if (!this.chart) return;
       this.chart.setDatasetVisibility(1, val);
       this.chart.update();
     },
-    tempData(val) {
-      this.chart.data.datasets[0].data = val;
-      this.chart.update();
+    tempData: {
+      deep: true,
+      handler(val) {
+        if (!this.chart) return;
+        this.chart.data.datasets[0].data = [...val];
+        this.chart.update();
+      }
     },
-    humidityData(val) {
-      this.chart.data.datasets[1].data = val;
-      this.chart.update();
+    humidityData: {
+      deep: true,
+      handler(val) {
+        if (!this.chart) return;
+        this.chart.data.datasets[1].data = [...val];
+        this.chart.update();
+      }
     },
-    labels(val) {
-      this.chart.data.labels = val;
-      this.chart.update();
+    labels: {
+      deep: true,
+      handler(val) {
+        if (!this.chart) return;
+        this.chart.data.labels = [...val];
+        this.chart.update();
+      }
     }
   }
 };
