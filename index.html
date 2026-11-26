@@ -1,11 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<<<<<<< Updated upstream
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
 <body>
     
+=======
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kælderterminalen</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/vue@3.0.11/dist/vue.global.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+  <div id="app">
+    <table v-if="latestMeasurement != null" class="table">
+      <tr>
+        <th>Temperatur</th>
+        <th>Luftfugtighed</th>
+        <th>Dato</th>
+      </tr>
+      <tr>
+        <td>{{ latestMeasurement.temperature.toFixed(2) }} °C</td>
+        <td>{{ latestMeasurement.humidity.toFixed(2) }} %</td>
+        <td>{{ latestMeasurement.Date }}</td>
+      </tr>
+    </table>
+
+    <weather-chart
+      v-if="sortedMeasurements.length > 0"
+      :labels="chartLabels"
+      :temp-data="chartTempData"
+      :humidity-data="chartHumidityData"
+    ></weather-chart>
+  </div>
+
+  <script src="WeatherChart.js"></script>
+  <script src="index.js"></script>
+>>>>>>> Stashed changes
 </body>
 </html>
