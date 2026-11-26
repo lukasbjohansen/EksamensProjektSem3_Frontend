@@ -27,7 +27,7 @@
 
     <weather-chart
       v-if="sortedMeasurements.length > 0"
-      :labels="chartLabels"
+      :start-time="chartStartTime"
       :temp-data="chartTempData"
       :humidity-data="chartHumidityData"
     ></weather-chart>

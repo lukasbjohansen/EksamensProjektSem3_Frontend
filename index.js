@@ -1,4 +1,4 @@
-const baseUri = "http://localhost:5203/api/Measurements";
+const baseUri = "https://measurementsapi9000-b4bsbph8awg2gya7.germanywestcentral-01.azurewebsites.net/api/measurements";
 
 Vue.createApp({
   components: { WeatherChart },
@@ -14,15 +14,33 @@ Vue.createApp({
     sortedMeasurements() {
       return [...this.measurements].sort((a, b) => a.time - b.time);
     },
-    chartLabels() {
-      return this.sortedMeasurements.map((m) => this.formatTimeOnly(m.time));
+    chartStartTime() {
+      const first = this.sortedMeasurements[0];
+      return first ? this.toDate(first.time).getTime() : 0;
     },
-    chartTempData() {
-      return this.sortedMeasurements.map((m) => m.temperature);
-    },
-    chartHumidityData() {
-      return this.sortedMeasurements.map((m) => m.humidity);
-    }
+    chartPoints() {
+  return this.sortedMeasurements.map((m) => {
+    const date = this.toDate(m.time);
+
+    return {
+      hour: date.getHours() + date.getMinutes() / 60 + date.getSeconds() / 3600,
+      temperature: m.temperature,
+      humidity: m.humidity
+    };
+  });
+},
+chartTempData() {
+  return this.chartPoints.map((point) => ({
+    x: point.hour,
+    y: point.temperature
+  }));
+},
+chartHumidityData() {
+  return this.chartPoints.map((point) => ({
+    x: point.hour,
+    y: point.humidity
+  }));
+}
   },
   async created() {
     await this.getLatestMeasurement();
