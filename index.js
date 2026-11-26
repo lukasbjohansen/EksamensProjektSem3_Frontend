@@ -36,23 +36,23 @@ const weatherChart = new Chart(ctx, {
         label: "Temperatur (°C)",
         data: tempDataExample,
         yAxisID: "yTemp",
-        borderColor: "#d96b27",
-        backgroundColor: "#d96b27",
-        borderWidth: 2.5,
-        tension: 0.1,
-        pointRadius: 0,
-        pointHoverRadius: 5
+        borderColor: "#d96b27",     // Farven på linjen
+        backgroundColor: "#d96b27", // Farven på punkterne
+        borderWidth: 2.5,             // Tykkelsen på linjen
+        tension: 0.1,                 // Giver linjen en let kurve
+        pointRadius: 0,               // Gør punkterne usynlige
+        pointHoverRadius: 5           // Gør punkterne synlige ved hover
       },
       {
         label: "Luftfugtighed (%)",
         data: humidityDataExample,
-        yAxisID: "yHum",
-        borderColor: "#2563eb",
-        backgroundColor: "#2563eb",
-        borderWidth: 2.5,
-        tension: 0.1,
-        pointRadius: 0,
-        pointHoverRadius: 5
+        yAxisID: "yHum", 
+        borderColor: "#2563eb",     // Farven på linjen
+        backgroundColor: "#2563eb", // Farven på punkterne
+        borderWidth: 2.5,             // Tykkelsen på linjen
+        tension: 0.1,                 // Giver linjen en let kurve
+        pointRadius: 0,               // Gør punkterne usynlige
+        pointHoverRadius: 5           // Gør punkterne synlige ved hover
       }
     ]
   },
