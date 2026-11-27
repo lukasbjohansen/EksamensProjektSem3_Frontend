@@ -31,7 +31,11 @@ const WeatherChart = {
         <label><input type="checkbox" v-model="showTemp"> Temperatur (°C)</label>
         <label><input type="checkbox" v-model="showHum"> Luftfugtighed (%)</label>
       </div>
-      <label for="periode">Tidsperiode</label>
+        <p v-if="selectedPeriod"> 
+            <p value=="day">
+            hey
+            </p>
+        </p> 
         <select id="periode" v-model="selectedPeriod">
           <option disabled value="">Vælg tidsperiode</option>
           <option value="day">1 dag</option>
